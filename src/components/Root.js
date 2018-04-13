@@ -1,8 +1,9 @@
 import React from 'react';
-import App from './App'
-import store from '../store'
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
 import Cookies from 'js-cookie';
+
+import App from './App';
+import store from '../store';
 
 import { testToken } from '../actions';
 
@@ -14,7 +15,7 @@ const Root = () => {
     <Provider store = {store}>
         <App />
     </Provider>
-  )
-}
+  );
+};
 
 export default Root;

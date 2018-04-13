@@ -3,7 +3,7 @@ import React from 'react';
 import Header from '../common/header';
 import Footer from '../common/footer';
 
-const MainLayout =  (props) => {
+const MainLayout = (props) => {
   return (
     <div>
       <div className='wrapper'>
@@ -12,7 +12,7 @@ const MainLayout =  (props) => {
       </div>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
 export default MainLayout;

@@ -15,7 +15,7 @@ const Login = (props) => {
         </div>
       </div>
     </LoginLayout>
-  )
-}
+  );
+};
 
 export default Login;

@@ -9,6 +9,6 @@ const FirstRow = (props) => {
       </div>
     </div>
   );
-}
+};
 
 export default FirstRow;

@@ -1,7 +1,18 @@
-const path = require('path');
-const webpack = require('webpack');
-const WebpackCleanPlugin = require('webpack-clean-plugin');
-const WebpackPluginCopy = require('webpack-plugin-copy');
+const webpack              = require('webpack');
+const merge                = require('webpack-merge');
+const WebpackPluginCopy    = require('webpack-plugin-copy');
+const WebpackCleanPlugin   = require('webpack-clean-plugin');
+const path                 = require('path');
+
+const devserver            = require('./webpack/devserver');
+const sass                 = require('./webpack/sass');
+const css                  = require('./webpack/css');
+const extractCSS           = require('./webpack/css.extract');
+const uglifyJS             = require('./webpack/js.uglify');
+const images               = require('./webpack/images');
+const js                   = require('./webpack/js');
+const prodPlugins          = require('./webpack/prod.plugins');
+const devPlugins           = require('./webpack/dev.plugins');
 
 const PATHS = {
     src: path.join(__dirname, 'src'),
@@ -9,63 +20,53 @@ const PATHS = {
     public: path.join(__dirname, 'public')
 };
 
-module.exports = {
-	entry: './src/index.js',
+const common = merge([
+  {  
+        entry: {
+            'index': PATHS.src + '/index.js',
+        },
 
-	output: {
-		filename: './js/bundle.js',
-		path: path.resolve(__dirname, 'build')
-	},
+        output: {
+          path: PATHS.build,
+          filename: './js/bundle.js'
+        },
 
-	module: {
-		rules: [
-			{
-				test: /\.jsx?$/,
-				use: 'babel-loader'
-			},
-			{
-	            test: /\.scss$/,
-	            use: [
-		            {
-		                loader: "style-loader" // creates style nodes from JS strings
-		            },
-		            {
-		                loader: "css-loader" // translates CSS into CommonJS
-		            },
-		            {
-		                loader: "sass-loader" // compiles Sass to CSS
-		            }
-	            ]
-        	}
-		]
-	},
+        plugins: [
+            new webpack.ProvidePlugin({
+                $: 'jquery',
+                jQuery: 'jquery'
+            }),
+            new webpack.DefinePlugin({
+                'process.env': {
+                    'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+                }
+            })
+        ],
 
-	plugins: [
-		new WebpackCleanPlugin({
-	      on: "emit",
-	      path: ['./build']
-	    }),
-	    new WebpackPluginCopy([
-            { from: PATHS.public, to: PATHS.build },
-        ]),
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-            }
-        })
-	],
-
-	devServer: {
-		inline: true,
-		contentBase: path.join(__dirname, "public"),
-		compress: true,
-		port:3000,
-		watchContentBase: true,
-		historyApiFallback: true
-	},
-
-	devtool: 'eval-source-map',
-	resolve: {
-    	extensions: ['.js', '.jsx'],
+        resolve: {
+          extensions: ['.js', '.jsx'],
+        }
     },
+    images(),
+    js()
+])
+
+module.exports = function(env) {
+    if (env === 'production') {
+        return merge([
+            common,
+            prodPlugins(),
+            extractCSS(),
+            uglifyJS()
+        ]);
+    }
+    if (env === 'development') {
+        return merge([
+            common,
+            devPlugins(),
+            devserver(),
+            sass(),
+            css(),
+        ]);
+    }
 }

@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
-import { login } from '../../../../actions'
+import { login } from '../../../../actions';
+
+const limits = {
+  email: {
+    min: 3,
+    max: 30,
+  },
+  password: {
+    min: 3,
+    max: 30,
+  },
+};
 
 class LoginForm extends Component {
   state = {
     email: '',
-    password: ''
+    password: '',
   };
 
   render() {
@@ -31,54 +42,43 @@ class LoginForm extends Component {
         <Link to="/cabinet" className="login__forget-password">Забыли пароль</Link>
         <Link to='/signup' className="login__forget-password">Sign up</Link>
       </form>
-    )
+    );
   }
 
-  handleSubmit = ev => {
+  handleSubmit = (ev) => {
     ev.preventDefault();
     const { email, password } = this.state;
     const data = {
       email,
-      password
-    }
+      password,
+    };
 
     this.props.login(data, this.state.type);
     this.setState({
       email: '',
-      password: ''
-    })
+      password: '',
+    });
   }
 
-  getClassName = type => {
-    if(this.state[type].length && this.state[type].length < limits[type].min) {
+  getClassName = (type) => {
+    if (this.state[type].length && this.state[type].length < limits[type].min) {
       return 'form-input__error';
     } else {
       return '';
     }
   }
 
-  handleChange = type => ev => {
-        const { value } = ev.target;
-        if (value.length > limits[type].max) return;
-        this.setState({
-            [type]: value
-        })
+  handleChange = (type) => ev => {
+    const { value } = ev.target;
+    if (value.length > limits[type].max) return;
+    this.setState({
+      [type]: value,
+    });
   };
-}
-
-const limits = {
-    email: {
-        min: 3,
-        max: 30
-    },
-    password: {
-        min: 3,
-        max: 30
-    }
 }
 
 export default connect((state) => {
   return {
-    authenticated: state.auth.authenticated
-  }
+    authenticated: state.auth.authenticated,
+  };
 }, { login })(LoginForm);

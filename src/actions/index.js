@@ -1,41 +1,40 @@
 import axios from 'axios';
 import { push } from 'react-router-redux';
 import Cookies from 'js-cookie';
-import { SUBMIT_LOGIN_DATA,
+import {
+  SUBMIT_LOGIN_DATA,
   SUBMIT_SIGNUP_DATA,
   TEST_TOKEN,
   LOGOUT,
-  START, SUCCESS, FAIL } from './constants';
+  START, SUCCESS, FAIL,
+} from './constants';
 
-let mainApi = 'http://46.101.222.238:80/'
+const mainApi = '/';
 
 export function login(data, type) {
-  let apiUrl = 'auth/login'
+  const apiUrl = 'auth/login';
 
   return (dispatch) => {
     dispatch({
       type: SUBMIT_LOGIN_DATA + START,
       payload: {
-        data
-      }
+        data,
+      },
     });
 
     return (axios.post(`${mainApi}${apiUrl}`, data)
-
-        .then((response) => {
-          dispatch({
-            type: SUBMIT_LOGIN_DATA + SUCCESS,
-            payload: { data }
-          });
-
-        })
-        .catch(error => {
-          dispatch({
-            type: SUBMIT_LOGIN_DATA + FAIL,
-            payload: { data, error }
-          });
-        })
-    );
+      .then((response) => {
+        dispatch({
+          type: SUBMIT_LOGIN_DATA + SUCCESS,
+          payload: { data },
+        });
+      })
+      .catch(error => {
+        dispatch({
+          type: SUBMIT_LOGIN_DATA + FAIL,
+          payload: { data, error },
+        });
+      }));
   };
 }
 
@@ -45,7 +44,7 @@ export function logout() {
 
     dispatch({
       type: LOGOUT + SUCCESS,
-      payload: {}
+      payload: {},
     });
 
     return dispatch(push('/login'));
@@ -53,32 +52,29 @@ export function logout() {
 }
 
 export function signup(data, type) {
-  let apiUrl = 'auth/signup';
+  const apiUrl = 'auth/signup';
 
   return (dispatch) => {
     dispatch({
       type: SUBMIT_SIGNUP_DATA + START,
-      payload: {
-        data
-      }
+      payload: { data },
     });
 
     return (axios.post(`${mainApi}${apiUrl}`, data)
+      .then((response) => {
+        dispatch({
+          type: SUBMIT_SIGNUP_DATA + SUCCESS,
+          payload: { data },
+        });
 
-        .then((response) => {
-          dispatch({
-            type: SUBMIT_SIGNUP_DATA + SUCCESS,
-            payload: { data }
-          });
-
-          return dispatch(push('/private/cabinet'))
-        })
-        .catch(error => {
-          dispatch({
-            type: SUBMIT_SIGNUP_DATA + FAIL,
-            payload: { data, error }
-          });
-        })
+        return dispatch(push('/private/cabinet'));
+      })
+      .catch(error => {
+        dispatch({
+          type: SUBMIT_SIGNUP_DATA + FAIL,
+          payload: { data, error },
+        });
+      })
     );
   };
 }
@@ -89,13 +85,11 @@ export function testToken(cookieToken) {
 
     dispatch({
       type: TEST_TOKEN + START,
-      payload: {
-        token
-      }
+      payload: { token },
     });
 
     return (
-      axios.post(`${mainApi}auth/token`, { access_token: token  })
+      axios.post(`${mainApi}auth/token`, { access_token: token })
         .then((response) => {
           dispatch({
             type: TEST_TOKEN + SUCCESS,
@@ -108,7 +102,7 @@ export function testToken(cookieToken) {
           dispatch({
             type: TEST_TOKEN + FAIL,
             payload: { token },
-            error
+            error,
           });
         })
     );

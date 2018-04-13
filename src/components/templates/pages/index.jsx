@@ -1,7 +1,6 @@
 import React from 'react';
 
 import MainLayout from '../layouts/main-layout.jsx';
-
 import FirstRow from '../sections/index/first-row';
 
 const Index = (props) => {
@@ -11,7 +10,7 @@ const Index = (props) => {
         <FirstRow/>
       </div>
     </MainLayout>
-  )
-}
+  );
+};
 
 export default Index;

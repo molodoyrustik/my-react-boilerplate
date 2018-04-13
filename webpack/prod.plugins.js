@@ -1,19 +1,17 @@
 const WebpackPluginCopy    = require('webpack-plugin-copy');
 const WebpackCleanPlugin   = require('webpack-clean-plugin');
+const path = require('path');
 
-
-module.exports = function(PATHS, pathRootDir) {
+module.exports = function() {
     return {
         plugins: [
             new WebpackCleanPlugin({
                 on: "emit",
-                path: ['./static', './build']
+                path: [ path.join(__dirname, '../build') ]
             }),
             new WebpackPluginCopy([
-                { from: PATHS.public, to: PATHS.build },
+                { from: path.join(__dirname, '../public'), to:  path.join(__dirname, '../build') },
             ]),
         ]
     };
 };
-
-
